@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useObservabilityData } from '@/hooks/useObservabilityData';
 import { useSearch } from '@/hooks/useSearch';
 import { getMetrics } from '@/lib/mockAPI';
@@ -18,6 +18,9 @@ export function Dashboard() {
   const [isAddingWebsite, setIsAddingWebsite] = useState(false);
   const [newWebsiteId, setNewWebsiteId] = useState('');
 
+  const [isGuideDismissed, setIsGuideDismissed] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(false);
+
   const { events, isLoading, isPaused, togglePause, clearEvents } = useObservabilityData(selectedWebsite);
   const {
     searchQuery,
@@ -29,6 +32,16 @@ export function Dashboard() {
     handleLevelChange,
     handleServiceChange,
   } = useSearch(events);
+
+  // Sync isGuideDismissed state whenever selectedWebsite changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && selectedWebsite !== 'mock') {
+      const dismissed = localStorage.getItem(`dash_guide_dismissed_${selectedWebsite}`) === 'true';
+      setIsGuideDismissed(dismissed);
+    } else {
+      setIsGuideDismissed(false);
+    }
+  }, [selectedWebsite]);
 
   const metrics = useMemo(() => getMetrics(events), [events]);
   const filteredMetrics = useMemo(() => getMetrics(filteredEvents), [filteredEvents]);
@@ -46,8 +59,15 @@ export function Dashboard() {
     }
   };
 
+  const handleDismissGuide = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(`dash_guide_dismissed_${selectedWebsite}`, 'true');
+      setIsGuideDismissed(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative">
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 sm:px-8">
@@ -134,10 +154,10 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Integration instructions when custom website is active */}
-        {selectedWebsite !== 'mock' && (
+        {/* Integration instructions inline when custom website is active AND not yet dismissed */}
+        {selectedWebsite !== 'mock' && !isGuideDismissed && (
           <div className="mb-8">
-            <IntegrationGuide websiteId={selectedWebsite} />
+            <IntegrationGuide websiteId={selectedWebsite} onDone={handleDismissGuide} />
           </div>
         )}
 
@@ -170,6 +190,51 @@ export function Dashboard() {
 
       {/* Error Modal */}
       <ErrorModal event={selectedError} onClose={() => setSelectedError(null)} />
+
+      {/* Floating Corner Script Button */}
+      {selectedWebsite !== 'mock' && isGuideDismissed && (
+        <button
+          onClick={() => setShowGuideModal(true)}
+          className="fixed bottom-6 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg transition-transform hover:scale-105 active:scale-95 focus:outline-none"
+          title="View setup script"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+        </button>
+      )}
+
+      {/* Integration Guide Modal */}
+      {showGuideModal && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowGuideModal(false)}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="w-full max-w-2xl rounded-md border border-border bg-card p-6 shadow-xl max-h-[90vh] overflow-y-auto relative">
+              <button
+                onClick={() => setShowGuideModal(false)}
+                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+                aria-label="Close modal"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="mt-2">
+                <IntegrationGuide websiteId={selectedWebsite} />
+              </div>
+              <button
+                onClick={() => setShowGuideModal(false)}
+                className="mt-6 w-full rounded-md bg-accent text-accent-foreground px-4 py-2 text-sm font-medium hover:bg-accent/90"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Add Website Modal */}
       {isAddingWebsite && (

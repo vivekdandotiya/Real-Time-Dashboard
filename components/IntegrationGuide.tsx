@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 
 interface IntegrationGuideProps {
   websiteId: string;
+  onDone?: () => void;
 }
 
-export function IntegrationGuide({ websiteId }: IntegrationGuideProps) {
+export function IntegrationGuide({ websiteId, onDone }: IntegrationGuideProps) {
   const [origin, setOrigin] = useState('http://localhost:3000');
   const [copied, setCopied] = useState(false);
 
@@ -79,12 +80,22 @@ export function IntegrationGuide({ websiteId }: IntegrationGuideProps) {
             Copy and paste this script tag into the <code className="bg-muted px-1 py-0.5 rounded">&lt;head&gt;</code> of your website.
           </p>
         </div>
-        <button
-          onClick={handleCopy}
-          className="rounded-md bg-accent text-accent-foreground px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent/90"
-        >
-          {copied ? 'Copied!' : 'Copy Script'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleCopy}
+            className="rounded-md border border-input bg-background text-foreground px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+          >
+            {copied ? 'Copied!' : 'Copy Script'}
+          </button>
+          {onDone && (
+            <button
+              onClick={onDone}
+              className="rounded-md bg-accent text-accent-foreground px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent/90"
+            >
+              Done
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-4">
