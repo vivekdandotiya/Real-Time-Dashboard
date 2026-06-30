@@ -21,6 +21,27 @@ export function Dashboard() {
   const [isGuideDismissed, setIsGuideDismissed] = useState(false);
   const [showGuideModal, setShowGuideModal] = useState(false);
 
+  // Load saved websites on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedWebsites = localStorage.getItem('dash_added_websites');
+      if (savedWebsites) {
+        try {
+          const parsed = JSON.parse(savedWebsites);
+          if (Array.isArray(parsed)) {
+            setWebsites(['mock', ...parsed.filter((w) => w !== 'mock')]);
+          }
+        } catch (e) {
+          console.error('Failed to parse saved websites', e);
+        }
+      }
+      const savedSelected = localStorage.getItem('dash_selected_website');
+      if (savedSelected) {
+        setSelectedWebsite(savedSelected);
+      }
+    }
+  }, []);
+
   const { events, isLoading, isPaused, togglePause, clearEvents } = useObservabilityData(selectedWebsite);
   const {
     searchQuery,
@@ -52,8 +73,17 @@ export function Dashboard() {
       .toLowerCase()
       .replace(/[^a-z0-9-_]/g, '-');
     if (cleanId && !websites.includes(cleanId)) {
-      setWebsites((prev) => [...prev, cleanId]);
+      const updatedWebsites = [...websites, cleanId];
+      setWebsites(updatedWebsites);
       setSelectedWebsite(cleanId);
+
+      // Save custom websites list to localStorage
+      if (typeof window !== 'undefined') {
+        const customOnly = updatedWebsites.filter((w) => w !== 'mock');
+        localStorage.setItem('dash_added_websites', JSON.stringify(customOnly));
+        localStorage.setItem('dash_selected_website', cleanId);
+      }
+
       setNewWebsiteId('');
       setIsAddingWebsite(false);
     }
@@ -88,6 +118,9 @@ export function Dashboard() {
                   setIsAddingWebsite(true);
                 } else {
                   setSelectedWebsite(e.target.value);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('dash_selected_website', e.target.value);
+                  }
                 }
               }}
               className="rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
