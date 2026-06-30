@@ -27,6 +27,26 @@ export const LogsTable = React.memo(function LogsTable({
   isLoading,
   onErrorClick,
 }: LogsTableProps) {
+  const aggregatedEvents = React.useMemo(() => {
+    const result: (LogEvent & { count: number })[] = [];
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
+      const last = result[result.length - 1];
+
+      if (
+        last &&
+        last.message === event.message &&
+        last.level === event.level &&
+        last.service === event.service
+      ) {
+        last.count += 1;
+      } else {
+        result.push({ ...event, count: 1 });
+      }
+    }
+    return result;
+  }, [events]);
+
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -82,7 +102,7 @@ export const LogsTable = React.memo(function LogsTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {events.map((event) => (
+            {aggregatedEvents.map((event) => (
               <tr
                 key={event.id}
                 className="transition-colors hover:bg-muted/50"
@@ -95,8 +115,15 @@ export const LogsTable = React.memo(function LogsTable({
                 <td className="px-4 py-3 text-sm text-muted-foreground font-mono">
                   {event.service}
                 </td>
-                <td className="px-4 py-3 text-sm text-foreground max-w-md truncate">
-                  {event.message}
+                <td className="px-4 py-3 text-sm text-foreground max-w-md">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate">{event.message}</span>
+                    {event.count > 1 && (
+                      <span className="inline-flex items-center rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-bold text-accent border border-accent/25">
+                        x{event.count}
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-xs font-mono text-muted-foreground">
                   {event.timestamp.toLocaleTimeString()}
