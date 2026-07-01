@@ -20,6 +20,36 @@ export function Dashboard() {
 
   const [isGuideDismissed, setIsGuideDismissed] = useState(false);
   const [showGuideModal, setShowGuideModal] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+
+  const lastErrorIdRef = React.useRef<string | null>(null);
+
+  // Dynamic chime builder using Web Audio API
+  const playChime = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+      osc.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.4);
+    } catch (e) {
+      console.warn('Audio play block:', e);
+    }
+  };
 
   // Load saved websites on mount
   useEffect(() => {
@@ -39,10 +69,26 @@ export function Dashboard() {
       if (savedSelected) {
         setSelectedWebsite(savedSelected);
       }
+      const savedMuted = localStorage.getItem('dash_muted') === 'true';
+      setIsMuted(savedMuted);
     }
   }, []);
 
   const { events, isLoading, isPaused, togglePause, clearEvents } = useObservabilityData(selectedWebsite);
+
+  // Monitor incoming logs to trigger chime on new critical errors
+  useEffect(() => {
+    const errorLogs = events.filter((e) => e.level === 'ERROR');
+    if (errorLogs.length > 0) {
+      const newestError = errorLogs[0]; // newest is first in the array
+      if (lastErrorIdRef.current && newestError.id !== lastErrorIdRef.current && !isMuted) {
+        playChime();
+      }
+      lastErrorIdRef.current = newestError.id;
+    } else {
+      lastErrorIdRef.current = null;
+    }
+  }, [events, isMuted]);
   const {
     searchQuery,
     selectedLevel,
@@ -96,6 +142,14 @@ export function Dashboard() {
     }
   };
 
+  const toggleMute = () => {
+    const newMute = !isMuted;
+    setIsMuted(newMute);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dash_muted', String(newMute));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       {/* Header */}
@@ -135,6 +189,22 @@ export function Dashboard() {
                 ))}
               <option value="ADD_NEW">+ Add Live Website...</option>
             </select>
+            <button
+              onClick={toggleMute}
+              className="rounded-md border border-border bg-card p-2 transition-colors hover:bg-muted text-accent"
+              aria-label={isMuted ? 'Unmute error alerts' : 'Mute error alerts'}
+              title={isMuted ? 'Unmute error alerts' : 'Mute error alerts'}
+            >
+              {isMuted ? (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z" />
+                </svg>
+              )}
+            </button>
             <ThemeToggle />
           </div>
         </div>
