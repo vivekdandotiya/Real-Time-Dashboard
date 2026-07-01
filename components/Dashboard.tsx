@@ -150,6 +150,38 @@ export function Dashboard() {
     }
   };
 
+  const handleExportLogs = () => {
+    if (filteredEvents.length === 0) return;
+    try {
+      const headers = ['ID', 'Timestamp', 'Level', 'Service', 'Message', 'Metadata'];
+      const rows = filteredEvents.map((e) => [
+        e.id,
+        e.timestamp instanceof Date ? e.timestamp.toISOString() : new Date(e.timestamp).toISOString(),
+        e.level,
+        e.service,
+        e.message.replace(/"/g, '""'),
+        e.details ? JSON.stringify(e.details).replace(/"/g, '""') : '',
+      ]);
+
+      const csvContent = [
+        headers.map((h) => `"${h}"`).join(','),
+        ...rows.map((r) => r.map((cell) => `"${cell}"`).join(',')),
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `logs_${selectedWebsite}_${Date.now()}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.error('Failed to export CSV:', e);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       {/* Header */}
@@ -276,6 +308,7 @@ export function Dashboard() {
           isPaused={isPaused}
           onTogglePause={togglePause}
           onClearEvents={clearEvents}
+          onExportLogs={handleExportLogs}
         />
 
         {/* Logs Table */}

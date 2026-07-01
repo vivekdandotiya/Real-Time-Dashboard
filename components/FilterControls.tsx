@@ -14,6 +14,7 @@ interface FilterControlsProps {
   isPaused: boolean;
   onTogglePause: () => void;
   onClearEvents: () => void;
+  onExportLogs?: () => void;
 }
 
 export const FilterControls = React.memo(function FilterControls({
@@ -27,6 +28,7 @@ export const FilterControls = React.memo(function FilterControls({
   isPaused,
   onTogglePause,
   onClearEvents,
+  onExportLogs,
 }: FilterControlsProps) {
   return (
     <div className="space-y-3 rounded-md border border-border bg-card p-4">
@@ -92,6 +94,14 @@ export const FilterControls = React.memo(function FilterControls({
           >
             {isPaused ? 'Resume' : 'Pause'}
           </button>
+          {onExportLogs && (
+            <button
+              onClick={onExportLogs}
+              className="flex-1 rounded-md border border-input bg-background text-foreground px-3 py-2 text-xs font-medium transition-colors hover:bg-muted"
+            >
+              Export
+            </button>
+          )}
           <button
             onClick={onClearEvents}
             className="flex-1 rounded-md border border-destructive bg-background text-destructive px-3 py-2 text-xs font-medium transition-colors hover:bg-destructive/5"
