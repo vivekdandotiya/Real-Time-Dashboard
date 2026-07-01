@@ -8,6 +8,41 @@ interface ErrorModalProps {
   onClose: () => void;
 }
 
+const highlightJSON = (details: any) => {
+  if (!details) return null;
+  const str = JSON.stringify(details, null, 2);
+
+  return str.split('\n').map((line, i) => {
+    const match = line.match(/^(\s*)"([^"]+)":\s*(.*)$/);
+    if (match) {
+      const indent = match[1];
+      const key = match[2];
+      const val = match[3];
+
+      let valSpan = <span className="text-foreground">{val}</span>;
+      if (val.startsWith('"')) {
+        valSpan = <span className="text-green-600 dark:text-green-400">{val}</span>;
+      } else if (!isNaN(Number(val.replace(/,$/, '')))) {
+        valSpan = <span className="text-amber-600 dark:text-amber-400">{val}</span>;
+      } else if (val.startsWith('true') || val.startsWith('false') || val.startsWith('null')) {
+        valSpan = <span className="text-blue-600 dark:text-blue-400">{val}</span>;
+      }
+
+      return (
+        <div key={i} className="leading-5">
+          <span>{indent}</span>
+          <span className="text-purple-600 dark:text-purple-400">"{key}"</span>: {valSpan}
+        </div>
+      );
+    }
+    return (
+      <div key={i} className="text-muted-foreground leading-5">
+        {line}
+      </div>
+    );
+  });
+};
+
 export const ErrorModal = React.memo(function ErrorModal({ event, onClose }: ErrorModalProps) {
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -58,9 +93,9 @@ export const ErrorModal = React.memo(function ErrorModal({ event, onClose }: Err
                 {event.details && (
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Details</p>
-                    <pre className="overflow-auto rounded bg-muted p-3 text-xs mt-1 font-mono text-foreground">
-                      {JSON.stringify(event.details, null, 2)}
-                    </pre>
+                    <div className="overflow-auto rounded bg-muted p-3 text-xs mt-1 font-mono whitespace-pre border border-border text-left">
+                      {highlightJSON(event.details)}
+                    </div>
                   </div>
                 )}
               </div>
