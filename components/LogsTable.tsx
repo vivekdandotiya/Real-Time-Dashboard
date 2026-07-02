@@ -79,24 +79,24 @@ export const LogsTable = React.memo(function LogsTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-[10px_10px_5px_#888888] dark:shadow-[10px_10px_5px_rgba(0,0,0,0.6)]">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-[6px_6px_5px_rgba(0,0,0,0.15)] dark:shadow-[6px_6px_5px_rgba(0,0,0,0.45)]">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-muted/30">
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
                 Level
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
                 Service
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
                 Message
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
                 Time
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-sm font-bold text-muted-foreground uppercase tracking-wider">
                 Action
               </th>
             </tr>
@@ -112,10 +112,10 @@ export const LogsTable = React.memo(function LogsTable({
                     {event.level}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-muted-foreground font-mono">
+                <td className="px-4 py-3 text-[15px] font-semibold text-muted-foreground font-mono">
                   {event.service}
                 </td>
-                <td className="px-4 py-3 text-sm text-foreground max-w-md">
+                <td className="px-4 py-3 text-[15px] font-semibold text-foreground max-w-md">
                   <div className="flex items-center gap-2">
                     <span className="truncate">{event.message}</span>
                     {event.count > 1 && (
@@ -125,14 +125,14 @@ export const LogsTable = React.memo(function LogsTable({
                     )}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-xs font-mono text-muted-foreground">
+                <td className="px-4 py-3 text-sm font-bold font-mono text-muted-foreground">
                   {event.timestamp.toLocaleTimeString()}
                 </td>
                 <td className="px-4 py-3 text-sm">
                   {event.level === 'ERROR' && (
                     <button
                       onClick={() => onErrorClick(event)}
-                      className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
+                      className="rounded px-2.5 py-1 text-xs font-bold text-destructive transition-colors hover:bg-destructive/10"
                     >
                       Details
                     </button>

@@ -31,11 +31,11 @@ export const FilterControls = React.memo(function FilterControls({
   onExportLogs,
 }: FilterControlsProps) {
   return (
-    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-[10px_10px_5px_#888888] dark:shadow-[10px_10px_5px_rgba(0,0,0,0.6)]">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-[6px_6px_5px_rgba(0,0,0,0.15)] dark:shadow-[6px_6px_5px_rgba(0,0,0,0.45)]">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {/* Search */}
         <div className="lg:col-span-2">
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+          <label className="block text-sm font-semibold text-muted-foreground mb-1.5">
             Search
           </label>
           <input
@@ -49,7 +49,7 @@ export const FilterControls = React.memo(function FilterControls({
 
         {/* Level Filter */}
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+          <label className="block text-sm font-semibold text-muted-foreground mb-1.5">
             Level
           </label>
           <select
@@ -66,7 +66,7 @@ export const FilterControls = React.memo(function FilterControls({
 
         {/* Service Filter */}
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+          <label className="block text-sm font-semibold text-muted-foreground mb-1.5">
             Service
           </label>
           <select
@@ -86,7 +86,7 @@ export const FilterControls = React.memo(function FilterControls({
         <div className="flex gap-2 items-end">
           <button
             onClick={onTogglePause}
-            className={`flex-1 rounded-md px-3 py-2 text-xs font-medium transition-colors ${
+            className={`flex-1 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
               isPaused
                 ? 'bg-accent text-accent-foreground hover:bg-accent/90'
                 : 'border border-input bg-background text-foreground hover:bg-muted'
@@ -97,14 +97,14 @@ export const FilterControls = React.memo(function FilterControls({
           {onExportLogs && (
             <button
               onClick={onExportLogs}
-              className="flex-1 rounded-md border border-input bg-background text-foreground px-3 py-2 text-xs font-medium transition-colors hover:bg-muted"
+              className="flex-1 rounded-md border border-input bg-background text-foreground px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-muted"
             >
               Export
             </button>
           )}
           <button
             onClick={onClearEvents}
-            className="flex-1 rounded-md border border-destructive bg-background text-destructive px-3 py-2 text-xs font-medium transition-colors hover:bg-destructive/5"
+            className="flex-1 rounded-md border border-destructive bg-background text-destructive px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-destructive/5"
           >
             Clear
           </button>

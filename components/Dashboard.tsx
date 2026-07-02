@@ -191,7 +191,7 @@ export function Dashboard() {
             <h1 className="text-2xl font-semibold tracking-tight">
               Observability
             </h1>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               Real-time system monitoring and event analysis
             </p>
           </div>
@@ -273,8 +273,8 @@ export function Dashboard() {
         </div>
 
         {/* Live Status Bar */}
-        <div className="mb-6 rounded-xl border border-border bg-card px-4 py-3 shadow-[10px_10px_5px_#888888] dark:shadow-[10px_10px_5px_rgba(0,0,0,0.6)]">
-          <div className="flex items-center gap-3 text-xs">
+        <div className="mb-6 rounded-xl border border-border bg-card px-4 py-3 shadow-[6px_6px_5px_rgba(0,0,0,0.15)] dark:shadow-[6px_6px_5px_rgba(0,0,0,0.45)]">
+          <div className="flex items-center gap-3 text-sm font-semibold">
             <div className="flex items-center gap-2">
               <div
                 className={`h-2 w-2 rounded-full ${isPaused ? 'bg-muted-foreground' : 'animate-pulse bg-accent'}`}

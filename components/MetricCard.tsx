@@ -30,14 +30,14 @@ export const MetricCard = React.memo(function MetricCard({
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 shadow-[10px_10px_5px_#888888] dark:shadow-[10px_10px_5px_rgba(0,0,0,0.6)] transition-all duration-300">
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+    <div className="rounded-xl border border-border bg-card p-5 shadow-[6px_6px_5px_rgba(0,0,0,0.15)] dark:shadow-[6px_6px_5px_rgba(0,0,0,0.45)] transition-all duration-300">
+      <p className="text-sm font-semibold text-muted-foreground">{label}</p>
       <div className="mt-4 flex items-end gap-2">
         {isLoading ? (
           <div className="h-10 w-20 animate-pulse rounded bg-muted" />
         ) : (
           <>
-            <span className={`text-4xl font-semibold tabular-nums ${getAccentColor(level)}`}>
+            <span className={`text-5xl font-bold tabular-nums ${getAccentColor(level)}`}>
               {value}
             </span>
           </>
