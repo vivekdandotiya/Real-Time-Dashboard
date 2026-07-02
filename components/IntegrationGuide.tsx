@@ -109,7 +109,7 @@ export function IntegrationGuide({ websiteId, onDone }: IntegrationGuideProps) {
   };
 
   return (
-    <div className="rounded-md border border-border bg-card p-5 mt-6">
+    <div className="rounded-xl border border-border bg-card p-5 mt-6 shadow-[0_4px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold tracking-tight text-foreground">

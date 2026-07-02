@@ -273,7 +273,7 @@ export function Dashboard() {
         </div>
 
         {/* Live Status Bar */}
-        <div className="mb-6 rounded-md border border-border bg-card px-4 py-3">
+        <div className="mb-6 rounded-xl border border-border bg-card px-4 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)]">
           <div className="flex items-center gap-3 text-xs">
             <div className="flex items-center gap-2">
               <div

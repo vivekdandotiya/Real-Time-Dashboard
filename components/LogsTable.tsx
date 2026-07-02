@@ -79,7 +79,7 @@ export const LogsTable = React.memo(function LogsTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-md border border-border">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-[0_4px_16px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.25)]">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

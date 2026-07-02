@@ -30,7 +30,7 @@ export const MetricCard = React.memo(function MetricCard({
   };
 
   return (
-    <div className="rounded-md border border-border bg-card p-5 transition-colors hover:bg-muted/50">
+    <div className="rounded-xl border border-border bg-card p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300">
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
       <div className="mt-4 flex items-end gap-2">
         {isLoading ? (
