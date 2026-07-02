@@ -116,7 +116,7 @@ export function IntegrationGuide({ websiteId, onDone }: IntegrationGuideProps) {
             Connect your Live Website ({websiteId})
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Copy and paste this script tag into the <code className="bg-muted px-1 py-0.5 rounded">&lt;head&gt;</code> of your website.
+            Copy and paste this script tag inside the <code className="bg-muted px-1 py-0.5 rounded">&lt;head&gt;</code> header section of your website's <code className="bg-muted px-1 py-0.5 rounded">index.html</code> file.
           </p>
         </div>
         <div className="flex gap-2">
