@@ -31,7 +31,7 @@ export const FilterControls = React.memo(function FilterControls({
   onExportLogs,
 }: FilterControlsProps) {
   return (
-    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
+    <div className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-[10px_10px_5px_#888888] dark:shadow-[10px_10px_5px_rgba(0,0,0,0.6)]">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {/* Search */}
         <div className="lg:col-span-2">
